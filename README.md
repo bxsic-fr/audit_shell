@@ -11,3 +11,8 @@ Un script Python pour générer un shell avec des fonctionnalités d'audit de s�
 ## Prérequis
 
 - Python 3
+
+## Utilisation
+- Git Clone du projet
+- `python3 main.py`
+- Accès au shell
