@@ -13,8 +13,24 @@ def generate_prompt():
 
 
 def execute_command(command):
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    return result.stdout, result.stderr
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    
+    # Lire les données de sortie en temps réel
+    output = ''
+    while process.poll() is None:
+        line = process.stdout.readline().rstrip('\n')
+        if line:
+            output += line + '\n'
+            print(line)  # Afficher la sortie en temps réel
+    
+    # Lire les données d'erreur après la fin de l'exécution
+    error = process.stderr.read().rstrip('\n')
+    
+    # Vérifier si des données d'erreur sont présentes
+    if error:
+        print(f"\033[91m{error}\033[0m")
+    
+    return output, error
 
 
 def log_command(command, output, audit_log_name):
@@ -39,7 +55,6 @@ def generate_timeline_chart(commands, timeline_name):
         file.write("Command | Recurrence\n")
         file.write("--- | ---\n")
         file.write(chart_data)
-
 
 def main(audit_log_name, timeline_name):
     os.system('clear')
